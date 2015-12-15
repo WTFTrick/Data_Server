@@ -1,7 +1,7 @@
 #include "server.h"
 #include <QtNetwork>
 
-Server::Server(int nPort, QObject *parent) : QTcpServer(parent)
+Server::Server(int nPort, QObject *parent) : QTcpServer(parent), sizeArray(100)
 {
     m_ptcpServer = new QTcpServer(this);
     if (!m_ptcpServer->listen(QHostAddress::Any, nPort))
@@ -11,11 +11,11 @@ Server::Server(int nPort, QObject *parent) : QTcpServer(parent)
         return;
     }
 
-    connect(m_ptcpServer, SIGNAL(newConnection()),
-            this,         SLOT(slotNewConnection())
-            );
-}
+    CreatorConnections();
 
+    timer.setInterval( 2000 );
+    timer.start();
+}
 
 void Server::slotNewConnection()
 {
@@ -74,7 +74,33 @@ void Server::sendToClient(QTcpSocket* pSocket, const QString& str)
     pSocket->write(arrBlock);
 }
 
-void Server::TimerSlot()
+void Server::DataGeneration(QVector<double> arrX, QVector<double> arrY)
 {
+    const int limPrint = 3;
+    qDebug() << "Size of arrX = " << arrX.size();
+    qDebug() << "Size of arrY = " << arrY.size();
+    for (int i = 0; i < sizeArray; i++)
+    {
+        arrX[i] = std::rand() % 70;
+        arrY[i] = std::rand() % 70;
 
+        if ( i < limPrint)
+        {
+            qDebug() << "arrX[" << i << "] = " << arrX.at(i);
+            qDebug() << "arrY[" << i << "] = " << arrY.at(i);
+        }
+    }
+}
+
+void Server::timerSlot()
+{
+    QVector<double> arrX(sizeArray);
+    QVector<double> arrY(sizeArray);
+    DataGeneration(arrX,arrY);
+}
+
+void Server::CreatorConnections()
+{
+    connect(m_ptcpServer, SIGNAL(newConnection()),this,SLOT(slotNewConnection()));
+    connect(&timer, SIGNAL(timeout()), this, SLOT(timerSlot()));
 }

@@ -20,7 +20,10 @@ private:
 private:
     void sendToClient(QTcpSocket* pSocket, const QString& str);
     void CreatorConnections();
+    void DataGeneration(QVector<double> arrX, QVector<double> arrY);
     QTimer timer;
+    int sizeArray;
+    int CountOfBins;
 public:
     Server(int nPort, QObject *parent=0);
 
@@ -28,7 +31,7 @@ public slots:
     virtual void slotNewConnection();
             void slotReadClient   ();
 private slots:
-            void TimerSlot();
+            void timerSlot();
 };
 
 #endif // SERVER_H
