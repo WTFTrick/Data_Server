@@ -7,8 +7,15 @@
 #include <QSet>
 #include <QTimer>
 
-class QTcpServer;
-class QTcpSocket;
+
+
+struct InfoChannel
+{
+    quint16 nm_channel;
+    quint16 freq;
+};
+
+
 
 class Server : public QTcpServer
 {
@@ -18,12 +25,13 @@ private:
     quint16     m_nNextBlockSize;
 
 private:
-    void sendToClient(QTcpSocket* pSocket, const QString& str);
+    void sendToClient(QTcpSocket* pSocket, QVector<double> arrX);
     void CreatorConnections();
-    void DataGeneration(QVector<double> arrX, QVector<double> arrY);
+    void DataGeneration(QVector<InfoChannel> *arrData);
     QTimer timer;
     int sizeArray;
     int CountOfBins;
+    QTcpSocket* pClientSocket;
 public:
     Server(int nPort, QObject *parent=0);
 

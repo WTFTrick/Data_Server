@@ -1,6 +1,7 @@
 #include "server.h"
 #include <QtNetwork>
 
+
 Server::Server(int nPort, QObject *parent) : QTcpServer(parent), sizeArray(100)
 {
     m_ptcpServer = new QTcpServer(this);
@@ -24,7 +25,7 @@ void Server::slotNewConnection()
     connect(pClientSocket, SIGNAL(disconnected()), pClientSocket, SLOT(deleteLater()));
     connect(pClientSocket, SIGNAL(readyRead()), this, SLOT(slotReadClient()) );
 
-    sendToClient(pClientSocket, "Server Response: Connected!");
+    //sendToClient(pClientSocket, "Server Response: Connected!");
 }
 
 void Server::slotReadClient()
@@ -57,46 +58,61 @@ void Server::slotReadClient()
 
         m_nNextBlockSize = 0;
 
-        sendToClient(pClientSocket, "Server Response: Received \"" + str + "\"" );
+        //sendToClient(pClientSocket, "Server Response: Received \"" + str + "\"" );
     }
 }
 
-void Server::sendToClient(QTcpSocket* pSocket, const QString& str)
+void Server::sendToClient(QTcpSocket* pSocket, QVector<double> arrX)
 {
     QByteArray  arrBlock;
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
+    //QDataStream out(pSocket);
     out.setVersion(QDataStream::Qt_4_5);
-    out << quint16(0) << QTime::currentTime() << str;
 
+    /*
+    out << quint16(0) << QTime::currentTime() << str;
     out.device()->seek(0);
     out << quint16(arrBlock.size() - sizeof(quint16));
-
     pSocket->write(arrBlock);
+    qDebug() << "Send = " << arrBlock << "\n";
+    */
+
 }
 
-void Server::DataGeneration(QVector<double> arrX, QVector<double> arrY)
+void Server::DataGeneration( QVector<InfoChannel> *arrData )
 {
-    const int limPrint = 3;
-    qDebug() << "Size of arrX = " << arrX.size();
-    qDebug() << "Size of arrY = " << arrY.size();
+    InfoChannel inf_chan;
+
     for (int i = 0; i < sizeArray; i++)
     {
-        arrX[i] = std::rand() % 70;
-        arrY[i] = std::rand() % 70;
+        inf_chan.nm_channel = i;
+        inf_chan.freq = std::rand() % 70;
 
-        if ( i < limPrint)
-        {
-            qDebug() << "arrX[" << i << "] = " << arrX.at(i);
-            qDebug() << "arrY[" << i << "] = " << arrY.at(i);
-        }
+        arrData->append( inf_chan );
+
     }
 }
 
 void Server::timerSlot()
 {
-    QVector<double> arrX(sizeArray);
-    QVector<double> arrY(sizeArray);
-    DataGeneration(arrX,arrY);
+    QVector<InfoChannel> arrData;
+    DataGeneration( &arrData );
+
+    if (1)
+    {
+        qDebug() << "our data (number of words = " << arrData.size() << ")"  ;
+        const int limPrint = 3;
+        for (int i = 0; i < arrData.size(); i++)
+        {
+            if ( i < limPrint)
+            {
+                qDebug() << i << ". " << arrData.at(i).nm_channel << " " << arrData.at(i).freq;
+            }
+        }
+    }
+
+    //sendToClient(pClientSocket, arrX);
+
 }
 
 void Server::CreatorConnections()
@@ -104,3 +120,16 @@ void Server::CreatorConnections()
     connect(m_ptcpServer, SIGNAL(newConnection()),this,SLOT(slotNewConnection()));
     connect(&timer, SIGNAL(timeout()), this, SLOT(timerSlot()));
 }
+
+
+/*
+QDataStream & operator << ( QDataStream & out, const S & s )
+{
+    out<<s.count;
+    for(size_t i = 0; i<s.count;++i)
+    {
+        out<<s.arrX[i];
+    }
+    out<<s.count;
+}
+/*/
