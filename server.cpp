@@ -2,7 +2,7 @@
 #include <QtNetwork>
 
 
-Server::Server(int nPort, QObject *parent) : QTcpServer(parent), sizeArray(100)
+Server::Server(int nPort, QObject *parent) : QTcpServer(parent), sizeArray(1000)
 {
     m_ptcpServer = new QTcpServer(this);
     if (!m_ptcpServer->listen(QHostAddress::Any, nPort))
@@ -136,7 +136,7 @@ void Server::timerSlot()
 
 void Server::CreatorConnections()
 {
-    qDebug() << "CreatorConnection ...";
+    //qDebug() << "CreatorConnection ...";
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(timerSlot()));
 
