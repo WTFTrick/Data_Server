@@ -14,7 +14,6 @@ Server::Server(int nPort, QObject *parent) : QTcpServer(parent), sizeArray(1000)
 
     CreatorConnections();
 
-
 }
 
 Server::~Server()
@@ -29,7 +28,10 @@ void Server::slotNewConnection()
 
 
     connect(pClientSocket, SIGNAL(disconnected()), pClientSocket, SLOT(deleteLater()));
+    connect(pClientSocket, SIGNAL(disconnected()), &timer, SLOT(stop()));
     connect(pClientSocket, SIGNAL(readyRead()), this, SLOT(slotReadClient()) );
+
+    // run timer
     timer.setInterval( 1000 );
     timer.start();
 }
@@ -95,8 +97,6 @@ void Server::sendToClient(QTcpSocket* pSocket, QVector<InfoChannel> *arrData)
 
 void Server::DataGeneration( QVector<InfoChannel> *arrData )
 {
-    //qDebug() << "State of socket =" << pClientSocket->;
-
     InfoChannel inf_chan;
 
     for (int i = 0; i < sizeArray; i++)
@@ -126,9 +126,11 @@ void Server::timerSlot()
         }
     }
 
+
     qDebug() << "State socket:";
     qDebug() << pClientSocket->state();
-    if(pClientSocket->state() == QAbstractSocket::ConnectedState){
+    if(pClientSocket->state() == QAbstractSocket::ConnectedState)
+    {
         sendToClient (pClientSocket, &arrData);
     }
 
