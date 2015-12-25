@@ -7,11 +7,15 @@
 #include <QSet>
 #include <QTimer>
 
+#include "ichannel.h"
+
+/*
 struct InfoChannel
 {
     quint16 nm_channel;
     quint16 freq;
 };
+*/
 
 class Server : public QTcpServer
 {
