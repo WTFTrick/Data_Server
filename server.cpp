@@ -2,12 +2,12 @@
 #include <QtNetwork>
 
 
-Server::Server(int nPort, QObject *parent) : QTcpServer(parent), sizeArray(1000)
+Server::Server(int nPort, QObject *parent) : QTcpServer(parent), sizeArray(2500)
 {
     m_ptcpServer = new QTcpServer(this);
     if (!m_ptcpServer->listen(QHostAddress::Any, nPort))
     {
-        qFatal("Could not listen on port.");
+        qDebug("Could not listen on port.");
         m_ptcpServer->close();
         return;
     }
@@ -30,6 +30,7 @@ void Server::slotNewConnection()
     connect(pClientSocket, SIGNAL(disconnected()), pClientSocket, SLOT(deleteLater()));
     connect(pClientSocket, SIGNAL(disconnected()), &timer, SLOT(stop()));
     connect(pClientSocket, SIGNAL(readyRead()), this, SLOT(slotReadClient()) );
+
 
     // run timer
     timer.setInterval( 1000 );
@@ -76,15 +77,13 @@ void Server::sendToClient(QTcpSocket* pSocket, QVector<InfoChannel> *arrData)
 {
     QByteArray  arrBlock;
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_5);
-
+    out.setVersion(QDataStream::Qt_5_4);
 
     out << quint32(0);
     for (int i = 0; i < arrData->size(); i++ )
     {
         out << arrData->at(i).nm_channel << arrData->at(i).freq;
     }
-
 
     out.device()->seek(0);
     out << quint32(arrBlock.size() - sizeof(quint32));
