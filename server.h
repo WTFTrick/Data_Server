@@ -7,7 +7,6 @@
 #include <QSet>
 #include <QTimer>
 
-
 #include "ichannel.h"
 
 /*

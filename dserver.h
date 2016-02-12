@@ -10,7 +10,6 @@
 #include "dgenerator.h"
 #include "tcpserver.h"
 
-
 class DServer : public QThread
 {
     Q_OBJECT

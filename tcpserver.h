@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
+
 #include "dgenerator.h"
 
 class TCPServer : public QTcpServer
@@ -21,6 +22,7 @@ private:
     QTcpSocket* pClientSocket;
     quint16     m_nNextBlockSize;
     quint8      m_nNextBlockSizeSt;
+
     void CreatorConnections();
 
 
@@ -28,7 +30,6 @@ public slots:
     virtual void slotNewConnection();
             void slotReadClient   ();
             void sendToClient(QByteArray arrData);
-
 };
 
 #endif // TSPSERVER_H

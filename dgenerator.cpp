@@ -23,5 +23,6 @@ void DGenerator::getData(QVector<quint32> *arrData)
         if (i < 3)
             qDebug() << i << ")" << frChannel;
     }
+
 }
 

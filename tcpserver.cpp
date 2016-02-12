@@ -31,14 +31,12 @@ void TCPServer::CreatorConnections()
     connect(m_ptcpServer, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
 
     pClientSocket = new QTcpSocket(this);
-
 }
 
 void TCPServer::slotNewConnection()
 {
     pClientSocket = m_ptcpServer->nextPendingConnection();
     qDebug() << "New client from:" << pClientSocket->peerAddress().toString();
-
     connect(pClientSocket, SIGNAL(disconnected()), pClientSocket, SLOT(deleteLater()));
     connect(pClientSocket, SIGNAL(readyRead()), this, SLOT(slotReadClient()) );
 
@@ -82,6 +80,7 @@ void TCPServer::slotReadClient()
             qDebug() << "Server turn off";
         }
     }
+
 }
 
 void TCPServer::sendToClient( QByteArray arrData )

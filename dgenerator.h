@@ -15,7 +15,6 @@ public:
     DGenerator( quint32 sizeDataContainer);
     ~DGenerator();
 
-    void getData( QVector<InfoChannel> *arrData );
     void getData( QVector<quint32> *arrData );
 
 

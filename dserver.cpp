@@ -11,13 +11,11 @@ void DServer::run()
 {
     qDebug() << "Thread dserver:" << this->currentThreadId();
 
-
     dataGenerator = new DGenerator( 2300 );
 
     QTimer timerDataGeneration;
     timerDataGeneration.start( 1000 );
     connect(&timerDataGeneration, &QTimer::timeout, this, &DServer::sendDataToServer, Qt::DirectConnection);
-
     exec();
 }
 
@@ -38,7 +36,6 @@ void DServer::sendDataToServer()
     out << quint32(0);
     foreach(quint32 crChannel, arrHits)
         out << crChannel;
-
 
     out.device()->seek(0);
     out << quint32(pkgData.size() - sizeof(quint32));
