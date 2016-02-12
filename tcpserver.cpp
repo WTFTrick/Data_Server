@@ -1,5 +1,7 @@
 #include "tcpserver.h"
 #include <QtNetwork>
+#include "dserver.h"
+
 
 TCPServer::TCPServer(QObject *parent) : QTcpServer(parent), pClientSocket (NULL)
 {
@@ -69,6 +71,16 @@ void TCPServer::slotReadClient()
 
         m_nNextBlockSizeSt = 0;
         qDebug() << "Server Received:" << start;
+
+        if (start == 1)
+        {
+            qDebug() << "Server turn on";
+
+        }
+        else if (start == 0)
+        {
+            qDebug() << "Server turn off";
+        }
     }
 }
 

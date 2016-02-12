@@ -11,6 +11,7 @@ private:
     QTcpServer* m_ptcpServer;
     quint16     m_nNextBlockSize;
 
+
 private:
     void sendToClient(QTcpSocket* pSocket, const QString& str);
 

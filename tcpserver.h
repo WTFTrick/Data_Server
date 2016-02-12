@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
-
 #include "dgenerator.h"
 
 class TCPServer : public QTcpServer
@@ -22,7 +21,6 @@ private:
     QTcpSocket* pClientSocket;
     quint16     m_nNextBlockSize;
     quint8      m_nNextBlockSizeSt;
-
     void CreatorConnections();
 
 

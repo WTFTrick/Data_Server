@@ -7,6 +7,7 @@
 #include <QSet>
 #include <QTimer>
 
+
 #include "ichannel.h"
 
 /*
@@ -32,7 +33,6 @@ private:
     int sizeArray;
     int CountOfBins;
     QTcpSocket* pClientSocket;
-
 public:
     Server(int nPort, QObject *parent=0);
     ~Server();

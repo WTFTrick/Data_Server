@@ -1,7 +1,6 @@
 #include <QCoreApplication>
 
 #include "server.h"
-
 #include "dserver.h"
 #include "tcpserver.h"
 
@@ -15,8 +14,7 @@ int main(int argc, char *argv[])
     TCPServer TcpServer;
     DServer dserv;
     QObject::connect(&dserv, &DServer::sendData, &TcpServer, &TCPServer::sendToClient, Qt::QueuedConnection);
-    //dserv.start();
-
+    dserv.start();
 
     /*
     Server server(2323);
