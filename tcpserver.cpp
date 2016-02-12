@@ -64,21 +64,16 @@ void TCPServer::slotReadClient()
             break;
         }
 
-        quint8 start;
-        in >> start;
+        quint8 cmd;
+        in >> cmd;
 
         m_nNextBlockSizeSt = 0;
-        qDebug() << "Server Received:" << start;
+        qDebug() << "Server Received:" << cmd;
 
-        if (start == 1)
-        {
-            qDebug() << "Server turn on";
 
-        }
-        else if (start == 0)
-        {
-            qDebug() << "Server turn off";
-        }
+        execCommand( cmd );
+
+
     }
 
 }

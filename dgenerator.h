@@ -4,10 +4,6 @@
 #include <QVector>
 #include <QDebug>
 
-
-#include "ichannel.h"
-
-
 class DGenerator
 {
 

@@ -30,6 +30,10 @@ public slots:
     virtual void slotNewConnection();
             void slotReadClient   ();
             void sendToClient(QByteArray arrData);
+
+
+signals:
+            void execCommand (quint8 cmd);
 };
 
 #endif // TSPSERVER_H

@@ -21,6 +21,7 @@ public:
 
 public slots:
     void sendDataToServer();
+    void execCommand(quint8 cmd);
 
 signals:
     void sendData ( QByteArray );

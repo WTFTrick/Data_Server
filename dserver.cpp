@@ -1,6 +1,5 @@
 #include "dserver.h"
 
-
 DServer::DServer(QObject *parent)
 {
     qDebug() << "Thread dserver constructor:" << this->currentThreadId();
@@ -40,8 +39,28 @@ void DServer::sendDataToServer()
     out.device()->seek(0);
     out << quint32(pkgData.size() - sizeof(quint32));
 
-
     // data sending to server
     emit sendData( pkgData );
+}
+
+void DServer::execCommand(quint8 cmd)
+{
+    if (cmd == 1)
+    {
+        qDebug() << "Server turn on";
+        this->start();
+
+        return;
+
+    }
+
+    if (cmd == 0)
+    {
+        qDebug() << "Server turn off";
+        this->quit();
+        //this->exit(); //another way to stop QThread
+        return;
+    }
+
 }
 

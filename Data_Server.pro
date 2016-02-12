@@ -9,15 +9,12 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    server.cpp \
     dserver.cpp \
     dgenerator.cpp \
     tcpserver.cpp
 
 HEADERS += \
-    server.h \
     dserver.h \
     dgenerator.h \
-    ichannel.h \
     tcpserver.h
 
