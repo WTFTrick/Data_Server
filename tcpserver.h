@@ -30,6 +30,7 @@ public slots:
     virtual void slotNewConnection();
             void slotReadClient   ();
             void sendToClient(QByteArray arrData);
+            void disconnectedClient ();
 
 
 signals:

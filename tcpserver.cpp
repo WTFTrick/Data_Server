@@ -3,7 +3,7 @@
 #include "dserver.h"
 
 
-TCPServer::TCPServer(QObject *parent) : QTcpServer(parent), pClientSocket (NULL)
+TCPServer::TCPServer(QObject *parent) : QTcpServer(parent), pClientSocket (NULL), m_nNextBlockSizeSt(0)
 {
     m_ptcpServer = new QTcpServer(this);
     if (!m_ptcpServer->listen(QHostAddress::Any, 2323))
@@ -38,6 +38,7 @@ void TCPServer::slotNewConnection()
     pClientSocket = m_ptcpServer->nextPendingConnection();
     qDebug() << "New client from:" << pClientSocket->peerAddress().toString();
     connect(pClientSocket, SIGNAL(disconnected()), pClientSocket, SLOT(deleteLater()));
+    connect( pClientSocket, SIGNAL( disconnected( ) ), SLOT( disconnectedClient( ) ) );
     connect(pClientSocket, SIGNAL(readyRead()), this, SLOT(slotReadClient()) );
 
 }
@@ -64,15 +65,17 @@ void TCPServer::slotReadClient()
             break;
         }
 
+        QString json;
+        //in >> json;
+        //qDebug() << "Server Received:" << json;
+
         quint8 cmd;
         in >> cmd;
 
         m_nNextBlockSizeSt = 0;
-        qDebug() << "Server Received:" << cmd;
-
+        //qDebug() << "Server Received:" << cmd;
 
         execCommand( cmd );
-
 
     }
 
@@ -83,7 +86,6 @@ void TCPServer::sendToClient( QByteArray arrData )
     QThread *tcpsThread = this->thread();
     qDebug() << "TCPServer::sendToClient( QByteArray arrData )";
     qDebug() << "TCPServer | thread" << tcpsThread;
-
 
     if (pClientSocket != NULL)
     {
@@ -97,6 +99,12 @@ void TCPServer::sendToClient( QByteArray arrData )
     }
     else
         qDebug() << "pClientSocket != NULL";
+}
+
+void TCPServer::disconnectedClient()
+{
+    qDebug() << "Client was disconnected!";
+    execCommand(0); //Stop the server
 }
 
 

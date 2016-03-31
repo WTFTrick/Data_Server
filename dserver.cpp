@@ -34,7 +34,7 @@ void DServer::sendDataToServer()
 
     out << quint32(0);
     foreach(quint32 crChannel, arrHits)
-        out << crChannel;
+    out << crChannel;
 
     out.device()->seek(0);
     out << quint32(pkgData.size() - sizeof(quint32));
