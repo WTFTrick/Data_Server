@@ -10,7 +10,7 @@ void DServer::run()
 {
     qDebug() << "Thread dserver:" << this->currentThreadId();
 
-    dataGenerator = new DGenerator( 2300 );
+    dataGenerator = new DGenerator( 2352 );
 
     QTimer timerDataGeneration;
     timerDataGeneration.start( 1000 );
