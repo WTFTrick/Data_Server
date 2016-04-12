@@ -15,6 +15,7 @@ void DServer::run()
     QTimer timerDataGeneration;
     timerDataGeneration.start( 1000 );
     connect(&timerDataGeneration, &QTimer::timeout, this, &DServer::sendDataToServer, Qt::DirectConnection);
+
     exec();
 }
 
@@ -58,7 +59,6 @@ void DServer::execCommand(quint8 cmd)
     {
         qDebug() << "Server turn off";
         this->quit();
-        //this->exit(); //another way to stop QThread
         return;
     }
 

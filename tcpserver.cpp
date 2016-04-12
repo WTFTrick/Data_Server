@@ -65,17 +65,22 @@ void TCPServer::slotReadClient()
             break;
         }
 
-        QString json;
-        //in >> json;
-        //qDebug() << "Server Received:" << json;
+        int d_type;
+        int data;
 
-        quint8 cmd;
-        in >> cmd;
+        in >> d_type;
+        in >> data;
+
+        qDebug() << "Server received type:" << d_type;
+        qDebug() << "Server received data:" << data;
+
+        //quint8 cmd;
+        //in >> cmd;
 
         m_nNextBlockSizeSt = 0;
         //qDebug() << "Server Received:" << cmd;
 
-        execCommand( cmd );
+        execCommand( data );
 
     }
 

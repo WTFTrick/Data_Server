@@ -16,6 +16,8 @@ public:
     TCPServer( QObject *parent = 0 );
     ~TCPServer();
 
+    enum TYPE_DATA{DATA_RAW, DATA_HIST, CFG_MUTOMO, CMD};
+
 
 private:
     QTcpServer* m_ptcpServer;
