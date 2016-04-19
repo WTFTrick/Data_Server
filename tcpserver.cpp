@@ -3,7 +3,7 @@
 #include "dserver.h"
 
 
-TCPServer::TCPServer(QObject *parent) : QTcpServer(parent), pClientSocket (NULL), m_nNextBlockSizeSt(0)
+TCPServer::TCPServer(QObject *parent) : QTcpServer(parent), pClientSocket (NULL)
 {
     m_ptcpServer = new QTcpServer(this);
     if (!m_ptcpServer->listen(QHostAddress::Any, 2323))
@@ -23,6 +23,7 @@ TCPServer::~TCPServer()
 
 }
 
+
 void TCPServer::CreatorConnections()
 {
     qDebug() << "CreatorConnections ...";
@@ -38,52 +39,76 @@ void TCPServer::slotNewConnection()
     pClientSocket = m_ptcpServer->nextPendingConnection();
     qDebug() << "New client from:" << pClientSocket->peerAddress().toString();
     connect(pClientSocket, SIGNAL(disconnected()), pClientSocket, SLOT(deleteLater()));
-    connect( pClientSocket, SIGNAL( disconnected( ) ), SLOT( disconnectedClient( ) ) );
+    connect(pClientSocket, SIGNAL( disconnected( ) ), SLOT( disconnectedClient( ) ) );
     connect(pClientSocket, SIGNAL(readyRead()), this, SLOT(slotReadClient()) );
-
 }
 
 void TCPServer::slotReadClient()
 {
     //qDebug() << "TSPServer::slotReadClient()";
 
+    quint64     m_nNextBlockSize(0);
+
     QDataStream in(pClientSocket);
-    in.setVersion(QDataStream::Qt_5_4);
+    in.setVersion(QDataStream::Qt_5_6);
     for (;;)
     {
-        if (!m_nNextBlockSizeSt)
+        if (!m_nNextBlockSize)
         {
-            if (pClientSocket->bytesAvailable() < sizeof(quint8))
+            if (pClientSocket->bytesAvailable() < sizeof(quint64))
             {
                 break;
             }
-            in >> m_nNextBlockSizeSt;
+            in >> m_nNextBlockSize;
         }
 
-        if (pClientSocket->bytesAvailable() < m_nNextBlockSizeSt)
+        qDebug() << "Block of data size: " << m_nNextBlockSize;
+
+        if (pClientSocket->bytesAvailable() < m_nNextBlockSize)
         {
             break;
         }
 
-        int d_type;
-        int data;
+        quint32   d_type(0);
+        QByteArray data;
 
         in >> d_type;
         in >> data;
+        TYPE_DATA dt = TYPE_DATA( d_type );
 
-        qDebug() << "Server received type:" << d_type;
-        qDebug() << "Server received data:" << data;
+        qDebug() << "Server received type:" << dt;
+        qDebug() << "Server received data:" << data.toInt();
 
-        //quint8 cmd;
-        //in >> cmd;
+        DataFromClient(dt, data);
 
-        m_nNextBlockSizeSt = 0;
-        //qDebug() << "Server Received:" << cmd;
-
-        execCommand( data );
-
+        m_nNextBlockSize = 0;
     }
 
+}
+
+void TCPServer::DataFromClient(TCPServer::TYPE_DATA t_data, QByteArray data)
+{
+    if ( t_data == DATA_CMD )
+        execCommand( data.toUInt() );
+
+    if ( t_data == DATA_CONFIG_MUTOMO)
+    {
+        QFile jsnFile("configuration.json");
+        jsnFile.open(QFile::Append);
+        QTextStream outJson(&jsnFile);
+        outJson << data;
+        jsnFile.close();
+    }
+
+    if ( t_data == DATA_HIST )
+    {
+        // Smth
+    }
+
+    if ( t_data == DATA_RAW )
+    {
+        // Smth
+    }
 }
 
 void TCPServer::sendToClient( QByteArray arrData )

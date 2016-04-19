@@ -16,24 +16,20 @@ public:
     TCPServer( QObject *parent = 0 );
     ~TCPServer();
 
-    enum TYPE_DATA{DATA_RAW, DATA_HIST, CFG_MUTOMO, CMD};
-
+    enum TYPE_DATA{DATA_RAW, DATA_HIST, DATA_CONFIG_MUTOMO, DATA_CMD};
 
 private:
     QTcpServer* m_ptcpServer;
     QTcpSocket* pClientSocket;
-    quint16     m_nNextBlockSize;
-    quint8      m_nNextBlockSizeSt;
 
+    void DataFromClient(TYPE_DATA t_data, QByteArray data);
     void CreatorConnections();
-
 
 public slots:
     virtual void slotNewConnection();
             void slotReadClient   ();
             void sendToClient(QByteArray arrData);
             void disconnectedClient ();
-
 
 signals:
             void execCommand (quint8 cmd);
