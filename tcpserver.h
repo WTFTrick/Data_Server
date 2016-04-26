@@ -21,6 +21,7 @@ public:
 private:
     QTcpServer* m_ptcpServer;
     QTcpSocket* pClientSocket;
+    void ClearJSONFile();
 
     void DataFromClient(TYPE_DATA t_data, QByteArray data);
     void CreatorConnections();

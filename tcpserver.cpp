@@ -23,6 +23,14 @@ TCPServer::~TCPServer()
 
 }
 
+void TCPServer::ClearJSONFile()
+{
+    QFile file("configuration.json");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        file.write("");
+    }
+}
 
 void TCPServer::CreatorConnections()
 {
@@ -70,16 +78,24 @@ void TCPServer::slotReadClient()
         }
 
         quint32   d_type(0);
+        //quint32   d_data(0);
         QByteArray data;
+        data.resize(4);
 
         in >> d_type;
         in >> data;
+        //data = pClientSocket->readAll();
+
         TYPE_DATA dt = TYPE_DATA( d_type );
 
+        //qDebug() << "Server received type (quint32):" << d_type;
         qDebug() << "Server received type:" << dt;
-        qDebug() << "Server received data:" << data.toInt();
+        //qDebug() << "Server received data (d_data):" << d_data;
+        qDebug() << "Size of data array:" << data.size();
+        qDebug() << "Client sent data in bytes:" << data;
+        qDebug() << "Client sent data:" << data.toInt();
 
-        DataFromClient(dt, data);
+        //DataFromClient(dt, data);
 
         m_nNextBlockSize = 0;
     }
@@ -93,6 +109,8 @@ void TCPServer::DataFromClient(TCPServer::TYPE_DATA t_data, QByteArray data)
 
     if ( t_data == DATA_CONFIG_MUTOMO)
     {
+        ClearJSONFile();
+
         QFile jsnFile("configuration.json");
         jsnFile.open(QFile::Append);
         QTextStream outJson(&jsnFile);
