@@ -70,7 +70,7 @@ void TCPServer::slotReadClient()
             in >> m_nNextBlockSize;
         }
 
-        qDebug() << "Block of data size: " << m_nNextBlockSize;
+        //qDebug() << "Block of data size: " << m_nNextBlockSize;
 
         if (pClientSocket->bytesAvailable() < m_nNextBlockSize)
         {
@@ -78,24 +78,24 @@ void TCPServer::slotReadClient()
         }
 
         quint32   d_type(0);
-        //quint32   d_data(0);
         QByteArray data;
         data.resize(4);
 
         in >> d_type;
         in >> data;
-        //data = pClientSocket->readAll();
 
         TYPE_DATA dt = TYPE_DATA( d_type );
 
-        //qDebug() << "Server received type (quint32):" << d_type;
+        /*
+        qDebug() << "Server received type (quint32):" << d_type;
         qDebug() << "Server received type:" << dt;
-        //qDebug() << "Server received data (d_data):" << d_data;
+        qDebug() << "Server received data (d_data):" << d_data;
         qDebug() << "Size of data array:" << data.size();
         qDebug() << "Client sent data in bytes:" << data;
         qDebug() << "Client sent data:" << data.toInt();
+        */
 
-        //DataFromClient(dt, data);
+        DataFromClient(dt, data);
 
         m_nNextBlockSize = 0;
     }
